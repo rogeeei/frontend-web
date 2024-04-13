@@ -45,7 +45,7 @@ form_login.onsubmit = async (e) => {
     successNotification("Successfully login account.");
 
     // Redirect Page
-    window.location.pathname = "/dashboard.html";
+    window.location.pathname = "/frontend-web/dashboard.html";
   }
   // Get response if 422 status code
   else if (response.status == 422) {

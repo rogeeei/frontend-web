@@ -12,7 +12,7 @@
 
     <title>Smartphone Controlled Presentation Web App | Register</title>
 
-    <link rel="icon" type="image/x-icon" href="/assets/img/logo.png" />
+    <link rel="icon" type="image/x-icon" href="assets/img/logo.png" />
 
     <link href="css/styles.css" rel="stylesheet" />
     <script
@@ -72,6 +72,46 @@
                             <label for="lastname">Last Name</label>
                           </div>
                         </div>
+                      </div>
+
+                      <div class="form-floating mb-3">
+                        <!-- Birthdate Field -->
+                        <input
+                          class="form-control"
+                          id="birthdate"
+                          name="birthdate"
+                          type="date"
+                          placeholder="Birthdate"
+                        />
+                        <label for="birthdate">Birthdate</label>
+                      </div>
+
+                        <div class="form-floating mb-3">
+                                <div class="form-group">
+                           <!-- Gender Field -->
+                                    <select 
+                                    class="form-control" 
+                                    id="gender" 
+                                    name="gender">
+                                        <option value="">Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                          <!-- Address Field -->
+                          <textarea
+                              class="form-control"
+                              id="address"
+                              name="address"
+                              placeholder="Address"
+                              style="height: 75px;"
+                              required
+                          ></textarea>
+                          <label for="address">Address</label>
                       </div>
 
                       <div class="form-floating mb-3">

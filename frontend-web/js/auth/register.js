@@ -36,17 +36,21 @@ form_register.onsubmit = async (e) => {
   // Get response if 200-299 status code
   if (response.ok) {
     form_register.reset();
-
+    
     successNotification("Successfully registered account.", 5);
+
+     // Redirect Page
+    window.location.pathname = "/frontend-web/index.html";
   }
   // Get response if 422 status code
   else if (response.status == 422) {
     const json = await response.json();
 
     errorNotification(json.message, 5);
-  }
+    
+   }
 
-  // Enable Button
-  document.querySelector("#form_register button").disabled = false;
-  document.querySelector("#form_register button").innerHTML = `Create Account`;
-};
+   // Enable Button
+   document.querySelector("#form_register button").disabled = false;
+   document.querySelector("#form_register button").innerHTML = `Create Account`;
+ };

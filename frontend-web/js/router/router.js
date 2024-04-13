@@ -1,27 +1,27 @@
 function setRouter() {
   switch (window.location.pathname) {
     // If you are logged in you cant access outside pages; redirect to dashboard
-    case "/":
-    case "/index.html":
-    case "/register.html":
+    case "/frontend-web":
+    case "/frontend-web/index.html":
+    case "/frontend-web/register.html":
       if (localStorage.getItem("token")) {
-        window.location.pathname = "/dashboard.html";
+        window.location.pathname = "/frontend-web/dashboard.html";
       }
       break;
 
     // If you are not logged in you cant access dashboard pages; redirect to /
-    case "/dashboard.html":
-    case "/presentation.html":
-    case "/slides.html":
+    case "/frontend-web/dashboard.html":
+    case "/frontend-web/presentation.html":
+    case "/frontend-web/slides.html":
       if (!localStorage.getItem("token")) {
-        window.location.pathname = "/";
+        window.location.pathname = "/frontend-web/";
       }
       break;
 
     // For Admin Users only; redirect to /dashboard
     case "/users.html":
       if (localStorage.getItem("role") != "Admin") {
-        window.location.pathname = "/dashboard.html";
+        window.location.pathname = "/frontend-web/dashboard.html";
       }
       break;
 

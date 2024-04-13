@@ -30,7 +30,7 @@ btn_logout.onclick = async () => {
 
     successNotification("Logout Successful.");
     // Redirect Page
-    window.location.pathname = "/";
+    window.location.pathname = "/frontend-web/";
   }
   // Get response if 400 or 500 status code
   else {
