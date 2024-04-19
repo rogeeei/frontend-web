@@ -4,7 +4,7 @@ import { setRouter } from "../router/router.js";
 setRouter();
 
 // Backend URL
-const backendURL = "http://backend.test";
+const backendURL = "http://back-end.test";
 
 // Get Logged User Profile
 async function getLoggedUser() {
@@ -35,20 +35,20 @@ async function getLoggedUser() {
   }
 }
 
-// Show Admin Pages Navigation
-function showNavAdminPages() {
-  if (localStorage.getItem("role") == "Admin") {
-    document.getElementById(
-      "nav_admin_pages"
-    ).innerHTML = `<div class="sb-sidenav-menu-heading">Admin Pages</div>
-        <a class="nav-link active" href="users.html">
-          <div class="sb-nav-link-icon">
-            <i class="fas fa-user"></i>
-          </div>
-          Users
-        </a>`;
-  }
-}
+// // Show Admin Pages Navigation
+// function showNavAdminPages() {
+//   if (localStorage.getItem("role") == "Admin") {
+//     document.getElementById(
+//       "nav_admin_pages"
+//     ).innerHTML = `<div class="sb-sidenav-menu-heading">Admin Pages</div>
+//         <a class="nav-link active" href="users.html">
+//           <div class="sb-nav-link-icon">
+//             <i class="fas fa-user"></i>
+//           </div>
+//           Users
+//         </a>`;
+//   }
+// }
 
 // Notifications
 function successNotification(message, seconds = 0) {
@@ -79,7 +79,7 @@ function errorNotification(message, seconds = 0) {
 
 export {
   backendURL,
-  showNavAdminPages,
+  // showNavAdminPages,
   successNotification,
   errorNotification,
   getLoggedUser,

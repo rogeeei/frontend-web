@@ -18,12 +18,12 @@ function setRouter() {
       }
       break;
 
-    // For Admin Users only; redirect to /dashboard
-    case "/users.html":
-      if (localStorage.getItem("role") != "Admin") {
-        window.location.pathname = "/frontend-web/dashboard.html";
-      }
-      break;
+    // // For Admin Users only; redirect to /dashboard
+    // case "/users.html":
+    //   if (localStorage.getItem("role") != "Admin") {
+    //     window.location.pathname = "/frontend-web/dashboard.html";
+    //   }
+    //   break;
 
     default:
       break;

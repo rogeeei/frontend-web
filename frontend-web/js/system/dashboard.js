@@ -1,6 +1,6 @@
 import {
   backendURL,
-  showNavAdminPages,
+  // showNavAdminPages,
   successNotification,
   errorNotification,
   getLoggedUser,
@@ -9,8 +9,8 @@ import {
 // Get Logged User Info
 getLoggedUser();
 
-// Get Admin Pages
-showNavAdminPages();
+// // Get Admin Pages
+// showNavAdminPages();
 
 // Logout Btn
 const btn_logout = document.getElementById("btn_logout");
