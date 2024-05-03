@@ -23,7 +23,7 @@ form_login.onsubmit = async (e) => {
 
   // Fetch API User Login Endpoint
   const response = await fetch(backendURL + "/api/login", {
-    method: "GET",
+    method: "POST",
     headers: {
       Accept: "application/json",
     },
