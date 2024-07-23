@@ -4,57 +4,53 @@ import {
   errorNotification,
 } from "../utils/utils.js";
 
-// Form Login
 const form_login = document.getElementById("form_login");
 
 form_login.onsubmit = async (e) => {
   e.preventDefault();
 
-  // Disable Button
   document.querySelector("#form_login button").disabled = true;
-  document.querySelector(
-    "#form_login button"
-  ).innerHTML = `<div class="spinner-border me-2" role="status">
-                      </div>
-                      <span>Loading...</span>`;
+  document.querySelector("#form_login button").innerHTML = `<div class="spinner-border me-2" role="status"></div><span>Loading...</span>`;
 
-  // Get Values of Form (input, textarea, select) set it as form-data
   const formData = new FormData(form_login);
 
-  // Fetch API User Login Endpoint
-  const response = await fetch(backendURL + "/api/login", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
-    body: formData,
-  });
+  // Debug: Log formData
+  console.log('Form Data:', [...formData.entries()]);
 
-  // Get response if 200-299 status code
-  if (response.ok) {
-    const json = await response.json();
+  try {
+    const response = await fetch(backendURL + "/api/login", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    });
 
-    // Store Token
-    localStorage.setItem("token", json.token);
+    if (response.ok) {
+      const json = await response.json();
+      console.log('Response JSON:', json); // Log the full response
 
-    // Store Role
-    localStorage.setItem("role", json.user.role);
+      // Check if token and role are present in response
+      if (json.data && json.data.token && json.data.data) {
+        localStorage.setItem("token", json.data.token);
+        localStorage.setItem("role", json.data.data.role);
 
-    form_login.reset();
+        form_login.reset();
 
-    successNotification("Successfully login account.");
-
-    // Redirect Page
-    window.location.pathname = "/frontend-web/dashboard.html";
+        successNotification("Successfully logged in.");
+        window.location.pathname = "/frontend-web/dashboard.html";
+      } else {
+        errorNotification("Login failed. Token or role not found.", 5);
+      }
+    } else if (response.status == 422) {
+      const json = await response.json();
+      errorNotification(json.message, 5);
+    }
+  } catch (error) {
+    console.error('Fetch error:', error); // Log error for debugging
+    errorNotification("An error occurred. Please try again.", 5);
+  } finally {
+    document.querySelector("#form_login button").disabled = false;
+    document.querySelector("#form_login button").innerHTML = `Login`;
   }
-  // Get response if 422 status code
-  else if (response.status == 422) {
-    const json = await response.json();
-
-    errorNotification(json.message, 5);
-  }
-
-  // Enable Button
-  document.querySelector("#form_login button").disabled = false;
-  document.querySelector("#form_login button").innerHTML = `Login`;
 };

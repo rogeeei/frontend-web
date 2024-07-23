@@ -1,16 +1,12 @@
 import {
   backendURL,
-  // showNavAdminPages,
+  showNavAdminPages,
   successNotification,
   errorNotification,
-  getLoggedUser,
 } from "../utils/utils.js";
 
-// Get Logged User Info
-getLoggedUser();
-
-// // Get Admin Pages
-// showNavAdminPages();
+// Get Admin Pages
+showNavAdminPages();
 
 // Logout Btn
 const btn_logout = document.getElementById("btn_logout");
@@ -39,3 +35,40 @@ btn_logout.onclick = async () => {
     errorNotification(json.message, 10);
   }
 };
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Display the current date and time
+  const date = new Date();
+  const formattedDate = date.toLocaleString(); // Format the date and time
+  document.getElementById("currentTimestamp").textContent = formattedDate;
+
+  // Fetch user location and update Barangay name
+  fetchUserLocation();
+});
+
+// JavaScript to handle adding services
+document.getElementById("addServiceForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  // Get form values
+  const serviceName = document.getElementById("serviceName").value;
+  const serviceDescription = document.getElementById("serviceDescription").value;
+
+  // Create a new row for the table
+  const tableBody = document.getElementById("serviceTableBody");
+  const newRow = document.createElement("tr");
+  newRow.innerHTML = `
+    <td>${serviceName}</td>
+    <td>${serviceDescription}</td>
+    <td>
+      <a href="#" class="btn btn-info btn-sm">Edit</a>
+      <a href="#" class="btn btn-danger btn-sm">Delete</a>
+    </td>
+  `;
+  tableBody.appendChild(newRow);
+
+  // Reset the form and close the modal
+  document.getElementById("addServiceForm").reset();
+  const modal = bootstrap.Modal.getInstance(document.getElementById("addServiceModal"));
+  modal.hide();
+});

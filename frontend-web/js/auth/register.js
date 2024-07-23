@@ -11,48 +11,49 @@ form_register.onsubmit = async (e) => {
   e.preventDefault();
 
   // Disable Button
-  document.querySelector("#form_register button").disabled = true;
-  document.querySelector(
-    "#form_register button"
-  ).innerHTML = `<div class="spinner-border me-2" role="status">
-                    </div>
-                    <span>Loading...</span>`;
+  const submitButton = document.querySelector("#form_register button");
+  submitButton.disabled = true;
+  submitButton.innerHTML = `<div class="spinner-border me-2" role="status"></div><span>Loading...</span>`;
 
   // Get Values of Form (input, textarea, select) set it as form-data
   const formData = new FormData(form_register);
 
-  // // Add User Role to those who registered
-  // formData.append("role", "User");
-
-  // Fetch API User Register Endpoint
-  const response = await fetch (backendURL + "/api/user", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
-    body: formData,
-  });
-
-  // Get response if 200-299 status code
-  if (response.ok) {
-    const json = await response.json();
-    
-    form_register.reset();
-    
-    successNotification("Successfully registered account.", 5);
-
-     // Redirect Page
-    window.location.pathname = "/frontend-web/index.html";
+  // Inspect form data before sending
+  for (const [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
   }
-  // Get response if 422 status code
-  else if (response.status == 422) {
-    const json = await response.json();
 
-    errorNotification(json.message, 5);
-    
-   }
+  try {
+    // Fetch API User Register Endpoint
+    const response = await fetch(backendURL + "/api/user", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    });
 
-   // Enable Button
-   document.querySelector("#form_register button").disabled = false;
-   document.querySelector("#form_register button").innerHTML = `Create Account`;
- };
+    // Handle response based on status code
+    if (response.ok) {
+      const json = await response.json();
+      
+      form_register.reset();
+      successNotification("Successfully registered account.", 5);
+
+      // Redirect Page
+      window.location.href = "/frontend-web/index.html";
+    } else if (response.status == 422) {
+      const json = await response.json();
+      console.error("Validation errors:", json.errors); // Log validation errors
+      errorNotification(json.message, 5);
+    } else {
+      errorNotification("An unexpected error occurred. Please try again.", 5);
+    }
+  } catch (error) {
+    errorNotification("An error occurred: " + error.message, 5);
+  } finally {
+    // Enable Button
+    submitButton.disabled = false;
+    submitButton.innerHTML = `Send Request`;
+  }
+};
