@@ -111,25 +111,15 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-@media (max-width: 768px) {
-  #layoutSidenav_nav {
-      display: block; /* Ensure it is displayed in mobile view */
-      /* Add any additional styling for mobile view */
-  }
+.vertical-card {
+  background: linear-gradient(to bottom, #0dcaf0, #20c997);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  color: white;
 }
-
-@media (max-width: 768px) {
-  #layoutSidenav_nav {
-      display: block; /* Ensure the nav is visible */
-      width: 100%; /* Ensure it takes full width */
-      position: absolute; /* Position it as needed */
-      top: 0; /* Align with top */
-      left: 0; /* Align with left */
-      z-index: 1000; /* Ensure it’s on top of other content */
-  }
+.vertical-card .card-title {
+  color: white;
 }
-
-
 
 hr {
   margin: 1rem 0;
@@ -316,13 +306,7 @@ samp {
   font-size: 1em;
 }
 
-pre {
-  display: block;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  overflow: auto;
-  font-size: 0.875em;
-}
+
 pre code {
   font-size: inherit;
   color: inherit;

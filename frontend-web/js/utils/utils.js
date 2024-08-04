@@ -34,9 +34,10 @@ function showNavAdminPages() {
       </a>`;
   }
 }
+
 // Notifications
 function successNotification(message, timeout = 5) {
-  const notificationElement = document.getElementById('success-notification');
+  const notificationElement = document.getElementById('successNotification');
   if (!notificationElement) {
     console.error('Notification element not found.');
     return;
@@ -48,22 +49,8 @@ function successNotification(message, timeout = 5) {
   }, timeout * 1000);
 }
 
-// function errorNotification(message, seconds = 0) {
-//   const alertDanger = document.querySelector(".alert-danger");
-//   alertDanger.classList.remove("d-none");
-//   alertDanger.classList.add("d-block");
-//   alertDanger.innerHTML = message;
-
-//   if (seconds !== 0) {
-//     setTimeout(() => {
-//       alertDanger.classList.remove("d-block");
-//       alertDanger.classList.add("d-none");
-//     }, seconds * 1000);
-//   }
-// }
-
 function errorNotification(message, duration = 5) {
-  const notificationElement = document.getElementById('error-notification'); // Ensure this ID matches your HTML
+  const notificationElement = document.getElementById('errorNotification'); // Ensure this ID matches your HTML
 
   if (notificationElement) {
     notificationElement.textContent = message;
@@ -76,7 +63,6 @@ function errorNotification(message, duration = 5) {
     console.error('Notification element not found.');
   }
 }
-
 
 export {
   backendURL,

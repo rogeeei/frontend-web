@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     showTable('medicine');
-    showTable('equipment');
+    
 
     document.querySelectorAll('.btn-group button').forEach(button => {
         button.addEventListener('click', function () {
@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (response.ok) {
                 const json = await response.json();
-                successNotification("Medicine details saved successfully.", 5);
                 document.getElementById("form_medicine").reset();
                 
                 // Hide the modal
@@ -92,7 +91,21 @@ document.addEventListener('DOMContentLoaded', function () {
             submitButton.innerHTML = `Add`;
         }
     });
+    // Handle search button click
+document.getElementById("searchButton").addEventListener("click", async () => {
+    const query = document.getElementById("searchInput").value;
+    await getMedicine(query);
+  });
+  
+  // Handle search input keypress (Enter key)
+  document.getElementById("searchInput").addEventListener("keypress", async (e) => {
+    if (e.key === "Enter") {
+      const query = e.target.value;
+      await getMedicine(query);
+    }
+  });
 
+  
     // Handle form submissions for equipment
     document.getElementById('form_equipment').addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -229,4 +242,95 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Get Admin Pages
     showNavAdminPages();
+});
+
+// Function to sort table rows by ID
+function sortTable(tbody, order) {
+    const rowsArray = Array.from(tbody.querySelectorAll('tr'));
+
+    rowsArray.sort((rowA, rowB) => {
+        const idA = parseInt(rowA.cells[0].textContent.trim(), 10);
+        const idB = parseInt(rowB.cells[0].textContent.trim(), 10);
+
+        if (order === 'Ascending') {
+            return idA - idB;
+        } else {
+            return idB - idA;
+        }
+    });
+
+    // Append sorted rows
+    rowsArray.forEach(row => tbody.appendChild(row));
+}
+
+// Function to search through table
+function searchTable(tbody) {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const rows = tbody.querySelectorAll('tr');
+
+    rows.forEach(row => {
+        const cells = Array.from(row.cells);
+        const matched = cells.some(cell => cell.textContent.toLowerCase().includes(searchInput));
+        row.style.display = matched ? '' : 'none';
+    });
+}
+
+// Event listener for sorting and searching in the medicine table
+document.addEventListener('DOMContentLoaded', () => {
+    const medicineTable = document.getElementById('medicine_table');
+    const medicineTbody = medicineTable.querySelector('tbody');
+
+    document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(item => {
+        item.addEventListener('click', (event) => {
+            const order = event.target.textContent;
+            sortTable(medicineTbody, order);
+        });
+    });
+
+    document.getElementById('searchButton').addEventListener('click', () => searchTable(medicineTbody));
+    document.getElementById('searchInput').addEventListener('input', () => searchTable(medicineTbody));
+});
+
+// Event listener for sorting and searching in the equipment table
+document.addEventListener('DOMContentLoaded', () => {
+    const equipmentTable = document.getElementById('equipment_table');
+    const equipmentTbody = equipmentTable.querySelector('tbody');
+
+    document.querySelectorAll('.dropdown-menu .dropdown-item').forEach(item => {
+        item.addEventListener('click', (event) => {
+            const order = event.target.textContent;
+            sortTable(equipmentTbody, order);
+        });
+    });
+
+    document.getElementById('searchButton').addEventListener('click', () => searchTable(equipmentTbody));
+    document.getElementById('searchInput').addEventListener('input', () => searchTable(equipmentTbody));
+});
+
+// Handle search button click for getting medicine
+document.getElementById("searchButton").addEventListener("click", async () => {
+    const query = document.getElementById("searchInput").value;
+    await getMedicine(query);
+});
+
+// Handle search input keypress (Enter key) for getting medicine
+document.getElementById("searchInput").addEventListener("keypress", async (e) => {
+    if (e.key === "Enter") {
+        const query = e.target.value;
+        await getMedicine(query);
+    }
+});
+
+// Handle search button click for getting equipment
+document.getElementById("searchButton").addEventListener("click", async () => {
+    const query = document.getElementById("searchInput").value;
+    await getEquipment(query);
+});
+
+// Handle search input keypress (Enter key) for getting equipment
+document.getElementById("searchInput").addEventListener("keypress", async (e) => {
+    if (e.key === "Enter") {
+        const query = e.target.value;
+        await getEquipment(query);
+    }
 });

@@ -5,70 +5,149 @@ import {
   errorNotification,
 } from "../utils/utils.js";
 
-// Get Admin Pages
+// Show Admin Pages
 showNavAdminPages();
 
-// Logout Btn
+// Logout Button
 const btn_logout = document.getElementById("btn_logout");
-btn_logout.onclick = async () => {
-  // Access Logout API Endpoint
-  const response = await fetch(backendURL + "/api/logout", {
-    headers: {
-      Accept: "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
+if (btn_logout) {
+  btn_logout.addEventListener('click', async () => {
+    try {
+      const response = await fetch(`${backendURL}/api/logout`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.ok) {
+        localStorage.clear();
+        successNotification("Logout Successful.");
+        window.location.pathname = "/frontend-web/";
+      } else {
+        const json = await response.json();
+        errorNotification(`Logout failed: ${json.message}`, 10);
+      }
+    } catch (error) {
+      errorNotification("An error occurred during logout: " + error.message);
+    }
   });
+}
 
-  // Get response if 200-299 status code
-  if (response.ok) {
-    // Clear Tokens
-    localStorage.clear();
+// Fetch and display services
+async function getServices(query = "") {
+  try {
+    const response = await fetch(`${backendURL}/api/services${query ? `?search=${query}` : ""}`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-    successNotification("Logout Successful.");
-    // Redirect Page
-    window.location.pathname = "/frontend-web/";
+    if (response.ok) {
+      const services = await response.json();
+      let cardHTML = "";
+      services.forEach((service) => {
+        cardHTML += `
+          <div class="card mb-3" style="width: 18rem;" data-id="${service.id}">
+            <div class="card-body">
+              <h5 class="card-title">${service.name}</h5>
+              <p class="card-text">${service.description}</p>
+              <div class="card-buttons">
+                <button class="btn btn-edit" onclick="editService(${service.id})">View</button>
+                <button class="btn btn-delete" onclick="deleteService(${service.id})">Delete</button>
+              </div>
+            </div>
+          </div>`;
+      });
+      document.getElementById("servicesContainer").innerHTML = cardHTML;
+    } else {
+      errorNotification(`Failed to load services: HTTP Error ${response.status}`);
+    }
+  } catch (error) {
+    errorNotification("An error occurred while fetching services: " + error.message);
   }
-  // Get response if 400 or 500 status code
-  else {
-    const json = await response.json();
+}
 
-    errorNotification(json.message, 10);
+// Initial load of services
+getServices();
+
+// Handle form submission for adding a new service
+document.getElementById("addServiceForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const submitButton = e.target.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.innerHTML = `<div class="spinner-border me-2" role="status"></div><span>Saving...</span>`;
+
+  const formData = new FormData(e.target);
+
+  try {
+    const response = await fetch(`${backendURL}/api/services`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: formData,
+    });
+
+    if (response.ok) {
+      successNotification("Service added successfully.");
+      document.getElementById("addServiceForm").reset();
+
+            // Hide the modal
+            const modalElement = document.getElementById("addServiceModal");
+            const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+            modal.hide();
+      
+
+      await getServices(); // Refresh the services list
+    } else if (response.status === 422) {
+      const json = await response.json();
+      errorNotification(json.message);
+    } else {
+      throw new Error("Network response was not ok.");
+    }
+  } catch (error) {
+    errorNotification("An error occurred: " + error.message);
+  } finally {
+    submitButton.disabled = false;
+    submitButton.innerHTML = `Add Service`;
+  }
+});
+
+
+// Attach function to the global window object
+window.deleteService = async function (serviceId) {
+  if (!confirm("Are you sure you want to delete this service?")) {
+    return; // Abort if the user cancels the deletion
+  }
+
+  try {
+    const response = await fetch(`${backendURL}/api/services/${serviceId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (response.ok) {
+      successNotification("Service deleted successfully.");
+      await getServices(); // Refresh the list of services
+    } else {
+      const json = await response.json();
+      errorNotification(`Failed to delete service: ${json.message}`);
+    }
+  } catch (error) {
+    errorNotification("An error occurred while deleting the service: " + error.message);
   }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Display the current date and time
-  const date = new Date();
-  const formattedDate = date.toLocaleString(); // Format the date and time
-  document.getElementById("currentTimestamp").textContent = formattedDate;
+// Define the editService function similarly if needed
+window.editService = function (serviceId) {
+  // Implement the edit functionality here
+  console.log("Edit service with ID:", serviceId);
+};
 
-  // Fetch user location and update Barangay name
-  fetchUserLocation();
-});
-
-// JavaScript to handle adding services
-document.getElementById("addServiceForm").addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  // Get form values
-  const serviceName = document.getElementById("serviceName").value;
-  const serviceDescription = document.getElementById("serviceDescription").value;
-
-  // Create a new row for the table
-  const tableBody = document.getElementById("serviceTableBody");
-  const newRow = document.createElement("tr");
-  newRow.innerHTML = `
-    <td>${serviceName}</td>
-    <td>${serviceDescription}</td>
-    <td>
-      <a href="#" class="btn btn-info btn-sm">Edit</a>
-      <a href="#" class="btn btn-danger btn-sm">Delete</a>
-    </td>
-  `;
-  tableBody.appendChild(newRow);
-
-  // Reset the form and close the modal
-  document.getElementById("addServiceForm").reset();
-  const modal = bootstrap.Modal.getInstance(document.getElementById("addServiceModal"));
-  modal.hide();
-});
